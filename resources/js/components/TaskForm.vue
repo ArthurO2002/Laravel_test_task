@@ -3,6 +3,7 @@ import { useTaskStore } from "../store/taskStore.js";
 import { useToast } from "vue-toastification";
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
+import { LoaderCircle } from 'lucide-vue-next';
 
 const taskStore = useTaskStore();
 const toast = useToast();
@@ -82,10 +83,9 @@ const onSubmit = handleSubmit(async (values) => {
             >
                 <span v-if="!taskStore.loading">Add Task</span>
                 <span v-else class="flex items-center">
-                    <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <div class="animate-spin">
+                        <LoaderCircle />
+                    </div>
                     Loading...
                 </span>
             </button>
