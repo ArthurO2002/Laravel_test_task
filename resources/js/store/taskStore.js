@@ -10,7 +10,8 @@ export const useTaskStore = defineStore('task', {
         currentPage: 1,
         totalPages: 1,
         perPage: 5,
-        totalTasks: 0
+        totalTasks: 0,
+        filterStatus: null
     }),
 
     actions: {
@@ -30,10 +31,16 @@ export const useTaskStore = defineStore('task', {
                throw error;
            }
        },
-        async getTasks(page = 1) {
+        async getTasks(page = 1, status= null) {
            try {
                this.fetchLoading = true
-               const response = await axios.get(`/api/tasks?page=${page}`)
+               let url = `/api/tasks?page=${page}`;
+
+               if(status !== null) {
+                   url += `&status=${status}`
+               }
+
+               const response = await axios.get(url)
                this.tasks = response.data.data;
                this.currentPage = response.data.current_page;
                this.totalPages = response.data.last_page;
@@ -74,6 +81,11 @@ export const useTaskStore = defineStore('task', {
            } catch (error) {
                throw error
            }
+        },
+
+        async setStatusFilter(status) {
+            this.filterStatus = status
+            await this.getTasks(1, status)
         }
     }
 })

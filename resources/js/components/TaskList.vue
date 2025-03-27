@@ -3,6 +3,16 @@
 import TasksContainer from "./TasksContainer.vue";
 import TaskForm from "./TaskForm.vue";
 import TaskNavigation from "./TaskNavigation.vue";
+import {useTaskStore} from "../store/taskStore.js";
+import {onMounted} from "vue";
+
+const taskStore = useTaskStore();
+
+
+onMounted(async () => {
+    await taskStore.getTasks()
+})
+
 </script>
 
 <template>

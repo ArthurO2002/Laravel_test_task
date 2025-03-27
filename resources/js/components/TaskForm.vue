@@ -74,7 +74,12 @@ const onSubmit = handleSubmit(async (values) => {
                     placeholder="Description"
                     :disabled="taskStore.creationLoading"
                 ></textarea>
-                <span v-if="formErrors.description" class="text-red-500 text-sm">{{ formErrors.description }}</span>
+                <div class="flex justify-between mt-3">
+                    <span v-if="formErrors.description" class="text-red-500 text-sm">{{ formErrors.description }}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                        {{ description.value?.length || 0 }}/500 characters
+                    </span>
+                </div>
             </div>
             <button
                 type="submit"

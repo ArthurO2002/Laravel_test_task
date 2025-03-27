@@ -5,9 +5,15 @@ use App\Models\Task;
 
 class TaskService
 {
-    public function getAllTasks($page = 1, $perPage = 5)
+    public function getAllTasks($page = 1, $status = null, $perPage = 5)
     {
-        return Task::paginate($perPage, ['*'], 'page', $page);
+        $query = Task::query();
+
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function createTask(array $data)

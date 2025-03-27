@@ -18,8 +18,9 @@ class TaskController extends Controller
 
     public function index(Request $request) {
         $page = $request->query('page', 1);
+        $status = $request->has('status') ? filter_var($request->query('status'), FILTER_VALIDATE_BOOLEAN) : null;
 
-        $data = $this->service->getAllTasks($page);
+        $data = $this->service->getAllTasks($page, $status);
         return response()->json($data);
     }
 

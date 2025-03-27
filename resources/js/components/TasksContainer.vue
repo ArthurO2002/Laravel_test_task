@@ -8,11 +8,6 @@ import {LoaderCircle, ChevronRight, ChevronLeft} from "lucide-vue-next";
 
 const taskStore = useTaskStore();
 
-
-onMounted(async () => {
-    await taskStore.getTasks()
-})
-
 const nextPage = async () => {
     if (taskStore.currentPage < taskStore.totalPages) {
         await taskStore.getTasks(taskStore.currentPage + 1);
