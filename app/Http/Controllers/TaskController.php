@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskListSortingEnum;
 use App\Services\TaskService;
+use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Task;
+use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
@@ -16,21 +19,33 @@ class TaskController extends Controller
         $this->service = $service;
     }
 
-    public function index() {
-        $data = $this->service->getAllTasks();
+    /**
+     * @throws Exception
+     */
+    public function index(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $page = $request->query('page', 1);
+        $status = $request->has('status') ? filter_var($request->query('status'), FILTER_VALIDATE_BOOLEAN) : null;
+        $sort = strtolower($request->query('sort', 'desc'));
+
+        $sort = $sort === TaskListSortingEnum::ASC->value ? TaskListSortingEnum::ASC : TaskListSortingEnum::DESC;
+
+        $data = $this->service->getAllTasks($page, $status, $sort);
         return response()->json($data);
     }
 
-    public function store(Request $request) {
+    /**
+     * @throws ValidationException
+     */
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string', 'max:500'],
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
+            throw new \Illuminate\Validation\ValidationException($validator);
         }
 
         $validated = $validator->validated();
@@ -38,18 +53,20 @@ class TaskController extends Controller
         return response()->json($data, 201);
     }
 
-    public function update(Request $request, Task $task) {
+    /**
+     * @throws ValidationException
+     */
+    public function update(Request $request, Task $task): \Illuminate\Http\JsonResponse
+    {
 
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string', 'max:500'],
             'status' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
+            throw new \Illuminate\Validation\ValidationException($validator);
         }
 
         $validated = $validator->validated();
@@ -57,7 +74,11 @@ class TaskController extends Controller
         return response()->json($data);
     }
 
-    public function destroy(Request $request, Task $task) {
+    /**
+     * @throws Exception
+     */
+    public function destroy(Request $request, Task $task): \Illuminate\Http\JsonResponse
+    {
         $this->service->deleteTask($task);
         return response()->json(null, 204);
     }

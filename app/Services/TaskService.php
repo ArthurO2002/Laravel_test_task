@@ -1,31 +1,64 @@
 <?php
 
 namespace App\Services;
+use App\Enums\TaskListSortingEnum;
 use App\Models\Task;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
-    public function getAllTasks()
+
+    /**
+     * Provides tasks by required pagination and status filtration
+     * @param int $page
+     * @param $status
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function getAllTasks(int $page = 1, $status = null, TaskListSortingEnum $sort = TaskListSortingEnum::DESC, int $perPage = 5): LengthAwarePaginator
     {
-        return Task::all();
+        $query = Task::query();
+
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+
+        $query->orderBy('created_at', $sort->value);
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function createTask(array $data)
+    /**
+     * Create ITask in DB
+     *
+     * @param array $data
+     * @return Task|null
+     */
+    public function createTask(array $data): ?Task
     {
         return Task::create($data);
     }
 
-    public function updateTask(Task $task, array $data) {
+    /**
+     * Update task in DB
+     *
+     * @param Task $task
+     * @param array $data
+     * @return Task|null
+     */
+    public function updateTask(Task $task, array $data): ?Task
+    {
         $task->update($data);
         return $task->fresh();
     }
 
-    public function deleteTask(Task $task) {
-
-        if (!$task->exists) {
-            throw new \Exception("Task not found.");
-        }
-
+    /**
+     * Delete task from DB
+     * @param Task $task
+     * @return true
+     */
+    public function deleteTask(Task $task): true
+    {
         $task->delete();
         return true;
     }
