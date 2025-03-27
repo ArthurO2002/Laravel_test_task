@@ -1,32 +1,92 @@
 <script setup>
 
+import { Pencil, Trash2 } from "lucide-vue-next";
+import {useTaskStore} from "../store/taskStore.js";
+import {useToast} from "vue-toastification";
+import {ref} from "vue";
+
+const taskStore = useTaskStore();
+const toast = useToast();
+
+const props = defineProps({
+    task: {
+        type: Object,
+        required: true
+    }
+})
+
+const isEditing = ref(false);
+const editedTitle = ref(props.task.title);
+const editedDescription = ref(props.task.description);
+
+async function changeTaskStatus(event){
+    try {
+        const status = event.target.checked;
+        await taskStore.updateTask({...props.task, status});
+    } catch (error) {
+        toast.error("Something when Wrong while updating the task.")
+    }
+}
+
+async function deleteTask() {
+    try {
+        await taskStore.deleteTask(props.task.id)
+        toast.success("Task deleted successfully!");
+    } catch (error) {
+        toast.error("Something when Wrong while updating the task.")
+    }
+}
+
+async function saveEditedTask() {
+    try {
+        const updatedTask = {
+            ...props.task,
+            title: editedTitle.value,
+            description: editedDescription.value,
+        };
+        await taskStore.updateTask(updatedTask);
+        isEditing.value = false;
+        toast.success("Task updated successfully!");
+    } catch (error) {
+        toast.error("Something went wrong while updating the task.");
+    }
+}
+
 </script>
 
 <template>
     <li class="w-full">
         <div class="flex gap-3 dark:text-white border-b-1 p-3">
-            <div>
-                <input type="checkbox">
+            <div class="flex items-center">
+                <input
+                    :checked="props.task.status"
+                    @change="changeTaskStatus"
+                    type="checkbox"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
             </div>
-            <div>
-                <h2 class="text-xl font-bold">Testing Task</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cum eaque earum error obcaecati, porro possimus? Assumenda, dolores error explicabo iusto labore modi non placeat quas, quisquam rerum sunt unde?</p>
+            <div class="w-full" :class="{ 'line-through text-gray-400 dark:text-gray-200': props.task.status }">
+                <template v-if="!isEditing">
+                    <h2 class="text-xl font-bold">{{ props.task.title }}</h2>
+                    <p>{{ props.task.description }}</p>
+                </template>
+                <template v-else>
+                    <input v-model="editedTitle" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    <textarea v-model="editedDescription" class="block p-2.5 w-full mb-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    <button @click="saveEditedTask" class="text-white bg-yellow-400 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
+                    <button @click="isEditing = false" class="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 disabled:opacity-50 disabled:cursor-not-allowed">Cancel</button>
+                </template>
             </div>
             <div>
                 <div class="ml-4 flex-shrink-0 flex space-x-2">
-                    <button class="text-gray-500 dark:text-white hover:text-gray-700 dark:hover:text-blue-500 focus:outline-none cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
+                    <button
+                        @click="isEditing = true"
+                        class="text-gray-500 dark:text-white hover:text-gray-700 dark:hover:text-blue-500 focus:outline-none cursor-pointer">
+                        <Pencil />
                     </button>
-                    <button class="text-red-500 hover:text-red-700 focus:outline-none cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18"></path>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                        </svg>
+                    <button @click="deleteTask"
+                        class="text-red-500 hover:text-red-700 focus:outline-none cursor-pointer">
+                        <Trash2 />
                     </button>
                 </div>
             </div>

@@ -14,4 +14,19 @@ class TaskService
     {
         return Task::create($data);
     }
+
+    public function updateTask(Task $task, array $data) {
+        $task->update($data);
+        return $task->fresh();
+    }
+
+    public function deleteTask(Task $task) {
+
+        if (!$task->exists) {
+            throw new \Exception("Task not found.");
+        }
+
+        $task->delete();
+        return true;
+    }
 }
