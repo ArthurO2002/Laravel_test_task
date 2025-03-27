@@ -35,7 +35,7 @@ class Handler
                 } else {
                     return response()->json([
                         'error' => 'Something went wrong on the server :(',
-                        'message' => $e->getMessage() ?: 'Something went wrong on the server',
+                        'message' => 'Something went wrong on the server, please try again later',
                     ], 500);
                 }
             }

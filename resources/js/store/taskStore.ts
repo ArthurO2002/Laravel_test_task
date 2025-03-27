@@ -6,6 +6,7 @@ import { ICreateTask } from '@/types/ICreateTask'
 import { ITaskResponse } from '@/types/ITaskResponse'
 import { ITask } from '@/types/ITask'
 import { SortingEnum } from '@/Enums/SortingEnum'
+import { getErrorMessage } from '@/helpers/GetErrorMessage'
 
 const toast = useToast()
 
@@ -45,7 +46,7 @@ export const useTaskStore = defineStore('task', {
         toast.success('Task created successfully')
         return data
       } catch (error) {
-        toast.error(error.message || 'Failed to create task')
+        toast.error(getErrorMessage(error))
       } finally {
         this.creationLoading = false
       }
@@ -67,7 +68,7 @@ export const useTaskStore = defineStore('task', {
         this.payload.totalTasks = response.data.total
         return response.data
       } catch (error) {
-        toast.error(`Unable to fetch tasks: ${error}`)
+        toast.error(getErrorMessage(error))
       } finally {
         this.fetchLoading = false
       }
@@ -83,7 +84,7 @@ export const useTaskStore = defineStore('task', {
         toast.success('Task has been successfully updated.')
         return updatedTask
       } catch (error) {
-        toast.error('Something when Wrong while updating the task.')
+        toast.error(getErrorMessage(error))
       } finally {
         this.setEditingTask(null)
       }
@@ -102,7 +103,7 @@ export const useTaskStore = defineStore('task', {
         toast.success('Task has been deleted successfully!')
         return true
       } catch (error) {
-        toast.error('Something when Wrong while updating the task.')
+        toast.error(getErrorMessage(error))
         return false
       }
     },

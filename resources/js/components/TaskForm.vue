@@ -4,13 +4,14 @@ import { useForm } from 'vee-validate'
 import { storeToRefs } from 'pinia'
 import * as yup from 'yup'
 import Loading from '@/components/common/Loading.vue'
+import { TaskFormErrorsEnum } from '@/Enums/TaskFormErrorsEnum'
 
 const taskStore = useTaskStore()
 const { createTask } = taskStore
 const { creationLoading } = storeToRefs(taskStore)
 const schema = yup.object({
-  title: yup.string().required('ITask title is required'),
-  description: yup.string().max(500, 'Description cannot exceed 500 characters').nullable()
+  title: yup.string().required(TaskFormErrorsEnum.Title),
+  description: yup.string().max(500, TaskFormErrorsEnum.Description).nullable()
 })
 
 const {
@@ -45,7 +46,7 @@ const onSubmit = handleSubmit(values => {
     <form @submit.prevent="onSubmit">
       <div class="mb-3">
         <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          ITask Title
+          Task Title
         </label>
         <input
           v-bind="title"
@@ -88,7 +89,7 @@ const onSubmit = handleSubmit(values => {
         :disabled="creationLoading"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
-        <span v-if="!creationLoading">Add ITask</span>
+        <span v-if="!creationLoading">Add Task</span>
         <span v-else class="flex items-center">
           <Loading />
           Loading...
