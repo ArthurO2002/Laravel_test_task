@@ -11,15 +11,16 @@ class TaskService
     /**
      * Provides tasks by required pagination and status filtration
      * @param int $page
-     * @param $status
+     * @param boolean|null $status
+     * @param TaskListSortingEnum $sort
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function getAllTasks(int $page = 1, $status = null, TaskListSortingEnum $sort = TaskListSortingEnum::DESC, int $perPage = 5): LengthAwarePaginator
+    public function getAllTasks(int $page = 1, ?bool $status = null, TaskListSortingEnum $sort = TaskListSortingEnum::DESC, int $perPage = 5): LengthAwarePaginator
     {
         $query = Task::query();
 
-        if ($status !== null) {
+        if (!is_null($status)) {
             $query->where('status', $status);
         }
 

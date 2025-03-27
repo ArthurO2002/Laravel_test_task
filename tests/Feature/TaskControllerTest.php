@@ -11,12 +11,11 @@ class TaskControllerTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test task creation API request
-     *
-     * @test
-     * @return void
+     * Tests task creation API request
      */
-    public function test_task_creation() {
+    #[Test]
+    public function test_task_creation(): void
+    {
         $data = [
             'title' => 'Test Task',
             'description' => 'This is a test task description.',
@@ -34,12 +33,11 @@ class TaskControllerTest extends TestCase
     }
 
     /**
-     * Test task update API request
-     *
-     * @test
-     * @return void
+     * Tests task update API request
      */
-    public function test_task_update() {
+    #[Test]
+    public function test_task_update(): void
+    {
         $task = Task::factory()->create();
 
         $data = [
@@ -64,12 +62,11 @@ class TaskControllerTest extends TestCase
     }
 
     /**
-     * Test task delete API request
-     *
-     * @test
-     * @return void
+     * Tests task delete API request
      */
-    public function test_task_delete() {
+    #[Test]
+    public function test_task_delete(): void
+    {
         $task = Task::factory()->create();
         $response = $this->deleteJson("/api/tasks/{$task->id}");
         $response->assertStatus(204);
@@ -78,13 +75,11 @@ class TaskControllerTest extends TestCase
     }
 
     /**
-     * Test tasks fetching with status filtration API request
-     *
-     * @test
-     * @return void
+     * Tests tasks fetching with status filtration API request
      */
-
-    public function test_tasks_fetching() {
+    #[Test]
+    public function test_tasks_fetching(): void
+    {
         Task::factory()->create(['status' => true]);
         Task::factory()->create(['status' => false]);
 
@@ -103,39 +98,33 @@ class TaskControllerTest extends TestCase
     }
 
     /**
-     * Test tasks fetching with sorting API request
-     *
-     * @test
-     * @return void
+     * Tests tasks fetching with sorting API request
      */
+    #[Test]
+    public function test_tasks_sorting(): void
+    {
+        Task::factory()->create(['title' => 'Task A']);
+        Task::factory()->create(['title' => 'Task B']);
 
-    public function test_tasks_sorting() {
-        {
-            Task::factory()->create(['title' => 'Task A']);
-            Task::factory()->create(['title' => 'Task B']);
+        $oldestTasks = $this->getJson('/api/tasks?sort=asc');
 
-            $oldestTasks = $this->getJson('/api/tasks?sort=asc');
+        $oldestTasks->assertStatus(200)
+            ->assertJsonFragment(['title' => 'Task A'])
+            ->assertJsonFragment(['title' => 'Task B']);
 
-            $oldestTasks->assertStatus(200)
-                ->assertJsonFragment(['title' => 'Task A'])
-                ->assertJsonFragment(['title' => 'Task B']);
+        $newestTasks = $this->getJson('/api/tasks?sort=desc');
 
-
-            $newestTasks = $this->getJson('/api/tasks?sort=desc');
-
-            $newestTasks->assertStatus(200)
-                ->assertJsonFragment(['title' => 'Task B'])
-                ->assertJsonFragment(['title' => 'Task A']);
-        }
+        $newestTasks->assertStatus(200)
+            ->assertJsonFragment(['title' => 'Task B'])
+            ->assertJsonFragment(['title' => 'Task A']);
     }
 
     /**
-     * Test task create API request validation handling
-     *
-     * @test
-     * @return void
+     * Tests task create API request validation handling
      */
-    public function test_task_creation_validation() {
+    #[Test]
+    public function test_task_creation_validation(): void
+    {
         $missingTitleErrorResponse = $this->postJson('/api/tasks', []);
 
         $missingTitleErrorResponse->assertStatus(422)
@@ -158,13 +147,11 @@ class TaskControllerTest extends TestCase
     }
 
     /**
-     * Test task update API request validation handling
-     *
-     * @test
-     * @return void
+     * Tests task update API request validation handling
      */
-
-    public function test_task_update_validation() {
+    #[Test]
+    public function test_task_update_validation(): void
+    {
         $task = Task::factory()->create();
         $missingTitleErrorResponse = $this->putJson("/api/tasks/{$task->id}", [
             'title' => null,
