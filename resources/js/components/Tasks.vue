@@ -41,6 +41,15 @@ async function changeTaskStatus(event){
     try {
         const status = event.target.checked;
         await taskStore.updateTask({...props.task, status});
+        if (taskStore.filterStatus !== null && taskStore.filterStatus !== status) {
+            taskStore.tasks = taskStore.tasks.filter(t => t.id !== props.task.id);
+            taskStore.totalTasks--;
+            taskStore.totalPages = Math.ceil(taskStore.totalTasks / taskStore.perPage);
+
+            if (taskStore.tasks.length === 0 && taskStore.currentPage > 1) {
+                await taskStore.getTasks(taskStore.currentPage - 1, taskStore.filterStatus);
+            }
+        }
     } catch (error) {
         toast.error("Something when Wrong while updating the task.")
     }
