@@ -26,7 +26,7 @@ class TaskService
     }
 
     /**
-     * Create Task in DB
+     * Create ITask in DB
      *
      * @param array $data
      * @return Task|null
