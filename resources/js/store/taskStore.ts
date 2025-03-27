@@ -5,7 +5,7 @@ import { useToast } from 'vue-toastification'
 import { ICreateTask } from '@/types/ICreateTask'
 import { ITaskResponse } from '@/types/ITaskResponse'
 import { ITask } from '@/types/ITask'
-import { SortingEnum } from '@/Enums/SortingEnum'
+import { SortingEnum } from '@/enums/SortingEnum'
 import { getErrorMessage } from '@/helpers/GetErrorMessage'
 
 const toast = useToast()
@@ -109,6 +109,8 @@ export const useTaskStore = defineStore('task', {
     },
 
     async setStatusFilter(status: boolean | null) {
+      // Check for preventing unnecessary rerendering
+      if (this.filterStatus === status) return
       this.filterStatus = status
       await this.getTasks(1, status)
     },

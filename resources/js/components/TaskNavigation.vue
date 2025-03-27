@@ -2,7 +2,7 @@
 import { useTaskStore } from '@/store/taskStore'
 
 const taskStore = useTaskStore()
-const filterTasks = status => {
+const filterTasks = (status: boolean | null) => {
   taskStore.setStatusFilter(status)
 }
 </script>
@@ -11,6 +11,8 @@ const filterTasks = status => {
   <div class="w-full mb-3">
     <button
       :class="{
+        //@TODO: Just for saving time I'm not diving in this places to make a separate style control
+
         'bg-blue-900 dark:bg-blue-900': taskStore.filterStatus === null,
         'bg-blue-600 dark:bg-blue-600': taskStore.filterStatus !== null
       }"
@@ -21,6 +23,8 @@ const filterTasks = status => {
     </button>
     <button
       :class="{
+        //@TODO: Just for saving time I'm not diving in this places to make a separate style control
+
         'bg-blue-900 dark:bg-blue-900': taskStore.filterStatus === true,
         'bg-blue-600 dark:bg-blue-600': taskStore.filterStatus !== true
       }"
@@ -31,6 +35,8 @@ const filterTasks = status => {
     </button>
     <button
       :class="{
+        //@TODO: Just for saving time I'm not diving in this places to make a separate style control
+
         'bg-blue-900 dark:bg-blue-900': taskStore.filterStatus === false,
         'bg-blue-600 dark:bg-blue-600': taskStore.filterStatus !== false
       }"

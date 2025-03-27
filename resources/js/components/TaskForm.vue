@@ -4,14 +4,14 @@ import { useForm } from 'vee-validate'
 import { storeToRefs } from 'pinia'
 import * as yup from 'yup'
 import Loading from '@/components/common/Loading.vue'
-import { TaskFormErrorsEnum } from '@/Enums/TaskFormErrorsEnum'
+import { TaskFormErrorsEnum } from '@/enums/TaskFormErrorsEnum'
 
 const taskStore = useTaskStore()
 const { createTask } = taskStore
 const { creationLoading } = storeToRefs(taskStore)
 const schema = yup.object({
   title: yup.string().required(TaskFormErrorsEnum.Title),
-  description: yup.string().max(500, TaskFormErrorsEnum.Description).nullable()
+  description: yup.string().max(500, TaskFormErrorsEnum.Description).required()
 })
 
 const {

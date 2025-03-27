@@ -12,7 +12,7 @@ const props = defineProps<ITaskProps>()
 
 const editSchema = yup.object({
   title: yup.string().required('Task title is required'),
-  description: yup.string().max(500, 'Description cannot exceed 500 characters').nullable()
+  description: yup.string().max(500, 'Description cannot exceed 500 characters').required()
 })
 
 const {

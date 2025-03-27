@@ -4,7 +4,7 @@ import { useTaskStore } from '@/store/taskStore'
 import { ChevronRight, ChevronLeft, ArrowUpNarrowWide, ArrowDownNarrowWide } from 'lucide-vue-next'
 import Loading from '@/components/common/Loading.vue'
 import { storeToRefs } from 'pinia'
-import { SortingEnum } from '@/Enums/SortingEnum'
+import { SortingEnum } from '@/enums/SortingEnum'
 
 const taskStore = useTaskStore()
 const { payload, getTasks } = taskStore

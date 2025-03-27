@@ -1,5 +1,5 @@
 import { ITaskState } from '@/types/ITaskState'
-import { SortingEnum } from '@/Enums/SortingEnum'
+import { SortingEnum } from '@/enums/SortingEnum'
 
 export interface IState {
   payload: ITaskState
