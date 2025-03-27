@@ -6,6 +6,7 @@ use App\Services\TaskService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -17,7 +18,7 @@ class TaskController extends Controller
 
     public function index() {
         $data = $this->service->getAllTasks();
-        return response()->json($data, 201);
+        return response()->json($data);
     }
 
     public function store(Request $request) {
@@ -35,5 +36,29 @@ class TaskController extends Controller
         $validated = $validator->validated();
         $data = $this->service->createTask($validated);
         return response()->json($data, 201);
+    }
+
+    public function update(Request $request, Task $task) {
+
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'boolean'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+        $data = $this->service->updateTask($task, $validated);
+        return response()->json($data);
+    }
+
+    public function destroy(Request $request, Task $task) {
+        $this->service->deleteTask($task);
+        return response()->json(null, 204);
     }
 }
