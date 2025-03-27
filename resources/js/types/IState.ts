@@ -5,4 +5,5 @@ export interface IState {
   creationLoading: boolean
   fetchLoading: boolean
   filterStatus: boolean | null
+  editingTaskId: number | null
 }

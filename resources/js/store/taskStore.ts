@@ -19,8 +19,13 @@ export const useTaskStore = defineStore('task', {
     },
     creationLoading: false,
     fetchLoading: false,
-    filterStatus: null
+    filterStatus: null,
+    editingTaskId: null as number | null
   }),
+
+  getters: {
+    isEditingTask: state => (taskId: number) => state.editingTaskId === taskId
+  },
 
   actions: {
     async createTask(taskData: ICreateTask) {
@@ -74,6 +79,8 @@ export const useTaskStore = defineStore('task', {
         return updatedTask
       } catch (error) {
         toast.error('Something when Wrong while updating the task.')
+      } finally {
+        this.setEditingTask(null)
       }
     },
     async deleteTask(taskId: number): Promise<boolean> {
@@ -98,6 +105,10 @@ export const useTaskStore = defineStore('task', {
     async setStatusFilter(status: boolean | null) {
       this.filterStatus = status
       await this.getTasks(1, status)
+    },
+
+    setEditingTask(taskId: number | null) {
+      this.editingTaskId = taskId
     }
   }
 })

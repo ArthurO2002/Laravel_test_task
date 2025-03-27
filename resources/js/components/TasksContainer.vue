@@ -43,7 +43,7 @@ const prevPage = async () => {
             class="px-4 py-2 flex justify-center items-center bg-blue-500 rounded disabled:opacity-50 cursor-pointer"
             @click="prevPage"
           >
-            <ChevronLeft color="#ffffff" />
+            <ChevronLeft class="text-white" />
           </button>
           <span class="dark:text-white">
             Page {{ payload.currentPage }} of {{ payload.totalPages }}
@@ -53,7 +53,7 @@ const prevPage = async () => {
             class="flex justify-center items-center px-4 py-2 bg-blue-500 rounded disabled:opacity-50 cursor-pointer"
             @click="nextPage"
           >
-            <ChevronRight color="#ffffff" />
+            <ChevronRight class="text-white" />
           </button>
         </div>
       </div>
