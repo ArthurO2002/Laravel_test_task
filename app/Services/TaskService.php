@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Enums\TaskListSortingEnum;
 use App\Models\Task;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -14,13 +15,15 @@ class TaskService
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function getAllTasks(int $page = 1, $status = null, int $perPage = 5): LengthAwarePaginator
+    public function getAllTasks(int $page = 1, $status = null, int $perPage = 5, TaskListSortingEnum $sort = TaskListSortingEnum::DESC): LengthAwarePaginator
     {
         $query = Task::query();
 
         if ($status !== null) {
             $query->where('status', $status);
         }
+
+        $query->orderBy('created_at', $sort->value);
 
         return $query->paginate($perPage, ['*'], 'page', $page);
     }

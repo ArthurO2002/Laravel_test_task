@@ -32,8 +32,10 @@ export const useTaskStore = defineStore('task', {
       try {
         this.creationLoading = true
         const { data } = await axios.post<ITaskResponse>('/api/tasks', taskData)
-        if (this.payload.tasks.length < this.payload.perPage) {
-          this.payload.tasks.push(data)
+
+        this.payload.tasks.unshift(data)
+        if (this.payload.tasks.length > this.payload.perPage) {
+          this.payload.tasks.pop()
         }
         this.payload.totalTasks++
         this.payload.totalPages = Math.ceil(this.payload.totalTasks / this.payload.perPage)
@@ -75,7 +77,7 @@ export const useTaskStore = defineStore('task', {
         if (index !== -1) {
           this.payload.tasks[index] = updatedTask
         }
-        toast.success('Task has been sucessfully updated.')
+        toast.success('Task has been successfully updated.')
         return updatedTask
       } catch (error) {
         toast.error('Something when Wrong while updating the task.')

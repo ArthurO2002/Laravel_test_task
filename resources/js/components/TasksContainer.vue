@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import Tasks from './Tasks.vue'
 import { useTaskStore } from '@/store/taskStore'
-import { LoaderCircle, ChevronRight, ChevronLeft } from 'lucide-vue-next'
+import { ChevronRight, ChevronLeft } from 'lucide-vue-next'
+import Loading from '@/components/common/Loading.vue'
+import { storeToRefs } from 'pinia'
 
-const { payload, getTasks, fetchLoading } = useTaskStore()
+const taskStore = useTaskStore()
+const { payload, getTasks } = taskStore
+const { fetchLoading } = storeToRefs(taskStore)
 
 const nextPage = async () => {
   if (payload.currentPage < payload.totalPages) {
@@ -26,9 +30,7 @@ const prevPage = async () => {
     </div>
     <div class="mt-3">
       <div v-if="fetchLoading" class="flex justify-center items-center py-4">
-        <div class="animate-spin">
-          <LoaderCircle color="#2b7fff" />
-        </div>
+        <Loading :style-class="'text-blue-500'" />
       </div>
       <div v-else>
         <div v-if="!payload.tasks.length">
@@ -60,18 +62,3 @@ const prevPage = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
