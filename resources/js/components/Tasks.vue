@@ -2,7 +2,12 @@
 
 import { Pencil, Trash2 } from "lucide-vue-next";
 
-
+defineProps({
+    task: {
+        type: Object,
+        required: true
+    }
+})
 </script>
 
 <template>
@@ -12,8 +17,8 @@ import { Pencil, Trash2 } from "lucide-vue-next";
                 <input type="checkbox">
             </div>
             <div>
-                <h2 class="text-xl font-bold">Testing Task</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cum eaque earum error obcaecati, porro possimus? Assumenda, dolores error explicabo iusto labore modi non placeat quas, quisquam rerum sunt unde?</p>
+                <h2 class="text-xl font-bold">{{ task.title }}</h2>
+                <p>{{ task.description }}</p>
             </div>
             <div>
                 <div class="ml-4 flex-shrink-0 flex space-x-2">
