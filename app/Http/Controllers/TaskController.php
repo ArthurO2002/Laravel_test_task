@@ -16,8 +16,10 @@ class TaskController extends Controller
         $this->service = $service;
     }
 
-    public function index() {
-        $data = $this->service->getAllTasks();
+    public function index(Request $request) {
+        $page = $request->query('page', 1);
+
+        $data = $this->service->getAllTasks($page);
         return response()->json($data);
     }
 
