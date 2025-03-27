@@ -49,7 +49,7 @@ const prevPage = async () => {
                     <button
                         @click="prevPage"
                         :disabled="taskStore.currentPage === 1"
-                        class="px-4 py-2 flex justify-center items-center  bg-blue-500 rounded disabled:opacity-50"
+                        class="px-4 py-2 flex justify-center items-center  bg-blue-500 rounded disabled:opacity-50 cursor-pointer"
                     >
                         <ChevronLeft color="#ffffff" />
                     </button>
@@ -59,7 +59,7 @@ const prevPage = async () => {
                     <button
                         @click="nextPage"
                         :disabled="taskStore.currentPage === taskStore.totalPages"
-                        class="flex justify-center items-center px-4 py-2 bg-blue-500 rounded disabled:opacity-50"
+                        class="flex justify-center items-center px-4 py-2 bg-blue-500 rounded disabled:opacity-50 cursor-pointer"
                     >
                         <ChevronRight color="#ffffff" />
                     </button>
