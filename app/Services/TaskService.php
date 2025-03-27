@@ -11,7 +11,8 @@ class TaskService
     /**
      * Provides tasks by required pagination and status filtration
      * @param int $page
-     * @param $status
+     * @param null $status
+     * @param TaskListSortingEnum $sort
      * @param int $perPage
      * @return LengthAwarePaginator
      */

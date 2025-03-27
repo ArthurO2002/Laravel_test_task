@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Enums\ErrorMessagesEnum;
+use App\Enums\ErrorTitlesEnum;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -11,31 +13,28 @@ use Throwable;
 
 class Handler
 {
-    /**
-     * Register the exception handling callbacks.
-     */
     public function register(Exceptions $exceptions): void
     {
         $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('api/*')) {
                 if ($e instanceof ValidationException) {
                     return response()->json([
-                        'error' => 'Validation failed',
+                        'error' => ErrorTitlesEnum::ValidationErrorTitle->value,
                         'errors' => $e->errors(),
                     ], 422);
                 } elseif ($e instanceof NotFoundHttpException) {
                     return response()->json([
-                        'error' => 'Resource not found',
+                        'error' => ErrorTitlesEnum::NotFoundErrorTitle->value,
                     ], 404);
                 } elseif ($e instanceof MethodNotAllowedHttpException) {
                     return response()->json([
-                        'error' => 'Method not allowed',
-                        'message' => 'The method is not allowed for this resource',
+                        'error' => ErrorTitlesEnum::NotAllowedMethodErrorTitle->value,
+                        'message' => ErrorMessagesEnum::MethodNotAllowed->value,
                     ], 405);
                 } else {
                     return response()->json([
-                        'error' => 'Something went wrong on the server :(',
-                        'message' => 'Something went wrong on the server, please try again later',
+                        'error' => ErrorTitlesEnum::UnexpectedErrorTitle->value,
+                        'message' => ErrorMessagesEnum::UnexpectedError->value,
                     ], 500);
                 }
             }

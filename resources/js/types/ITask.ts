@@ -2,5 +2,5 @@ export interface ITask {
   id: number
   title: string
   description?: string
-  status: boolean | null
+  status?: boolean | null
 }
