@@ -15,7 +15,7 @@ class TaskService
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function getAllTasks(int $page = 1, $status = null, int $perPage = 5, TaskListSortingEnum $sort = TaskListSortingEnum::DESC): LengthAwarePaginator
+    public function getAllTasks(int $page = 1, $status = null, TaskListSortingEnum $sort = TaskListSortingEnum::DESC, int $perPage = 5): LengthAwarePaginator
     {
         $query = Task::query();
 

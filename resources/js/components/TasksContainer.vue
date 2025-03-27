@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import Tasks from './Tasks.vue'
 import { useTaskStore } from '@/store/taskStore'
-import { ChevronRight, ChevronLeft } from 'lucide-vue-next'
+import { ChevronRight, ChevronLeft, ArrowUpNarrowWide, ArrowDownNarrowWide } from 'lucide-vue-next'
 import Loading from '@/components/common/Loading.vue'
 import { storeToRefs } from 'pinia'
+import { SortingEnum } from '@/Enums/SortingEnum'
 
 const taskStore = useTaskStore()
 const { payload, getTasks } = taskStore
-const { fetchLoading } = storeToRefs(taskStore)
+const { fetchLoading, sortOrder, filterStatus } = storeToRefs(taskStore)
+
+const toggleSort = async () => {
+  sortOrder.value = sortOrder.value === SortingEnum.ASC ? SortingEnum.DESC : SortingEnum.ASC
+  await getTasks(payload.currentPage, filterStatus.value, sortOrder.value)
+}
 
 const nextPage = async () => {
   if (payload.currentPage < payload.totalPages) {
@@ -26,7 +32,24 @@ const prevPage = async () => {
   <div class="w-full bg-white dark:bg-gray-700 shadow rounded-lg p-6 mb-6">
     <div class="flex justify-between items-center">
       <h1 class="text-2xl dark:text-white">All Tasks</h1>
-      <p class="dark:text-white">Total Tasks: {{ payload.totalTasks }}</p>
+      <div class="flex items-center gap-4">
+        <button
+          class="flex items-center gap-2 px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500 cursor-pointer"
+          title="Toggle sort order"
+          @click="toggleSort"
+        >
+          <div v-if="sortOrder === SortingEnum.ASC">
+            <ArrowUpNarrowWide class="dark:text-white" />
+          </div>
+          <div v-else>
+            <ArrowDownNarrowWide class="dark:text-white" />
+          </div>
+          <span class="dark:text-white">
+            Sort by Date ({{ sortOrder === SortingEnum.DESC ? 'Newest' : 'Oldest' }})
+          </span>
+        </button>
+        <p class="dark:text-white">Total Tasks: {{ payload.totalTasks }}</p>
+      </div>
     </div>
     <div class="mt-3">
       <div v-if="fetchLoading" class="flex justify-center items-center py-4">

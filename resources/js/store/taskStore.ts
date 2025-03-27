@@ -5,6 +5,7 @@ import { useToast } from 'vue-toastification'
 import { ICreateTask } from '@/types/ICreateTask'
 import { ITaskResponse } from '@/types/ITaskResponse'
 import { ITask } from '@/types/ITask'
+import { SortingEnum } from '@/Enums/SortingEnum'
 
 const toast = useToast()
 
@@ -20,7 +21,8 @@ export const useTaskStore = defineStore('task', {
     creationLoading: false,
     fetchLoading: false,
     filterStatus: null,
-    editingTaskId: null as number | null
+    editingTaskId: null as number | null,
+    sortOrder: SortingEnum.DESC
   }),
 
   getters: {
@@ -48,7 +50,7 @@ export const useTaskStore = defineStore('task', {
         this.creationLoading = false
       }
     },
-    async getTasks(page = 1, status: boolean | null = null) {
+    async getTasks(page = 1, status: boolean | null = null, sort: SortingEnum = SortingEnum.DESC) {
       try {
         this.fetchLoading = true
         let url = `/api/tasks?page=${page}`
@@ -56,6 +58,7 @@ export const useTaskStore = defineStore('task', {
         if (status !== null) {
           url += `&status=${status}`
         }
+        url += `&sort=${sort}`
 
         const response = await axios.get(url)
         this.payload.tasks = response.data.data

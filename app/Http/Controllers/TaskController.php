@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskListSortingEnum;
 use App\Services\TaskService;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -25,8 +26,11 @@ class TaskController extends Controller
     {
         $page = $request->query('page', 1);
         $status = $request->has('status') ? filter_var($request->query('status'), FILTER_VALIDATE_BOOLEAN) : null;
+        $sort = strtolower($request->query('sort', 'desc'));
 
-        $data = $this->service->getAllTasks($page, $status);
+        $sort = $sort === TaskListSortingEnum::ASC->value ? TaskListSortingEnum::ASC : TaskListSortingEnum::DESC;
+
+        $data = $this->service->getAllTasks($page, $status, $sort);
         return response()->json($data);
     }
 
